@@ -3,7 +3,7 @@
     <body>
     <div id="app">
         <input @input="getStates()" v-model="str">
-        <ul class="dropdown-menu" style="width:100%">
+        <ul v-if="str !== '' && states.length !== 0" class="dropdown-menu" style="width:100%">
             <li v-for="state in states">
                 <a href="#">{{ state.name }}</a>
             </li>
