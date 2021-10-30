@@ -2,10 +2,12 @@
 <html>
     <body>
     <div id="app">
-        <input @keyup.enter="getStates()" v-model="str">
-        <div v-for="state in states">
-            {{ state.name }}
-        </div>
+        <input @input="getStates()" v-model="str">
+        <ul class="dropdown-menu" style="width:100%">
+            <li v-for="state in states">
+                <a href="#">{{ state.name }}</a>
+            </li>
+        </ul>
     </div>
 
 
