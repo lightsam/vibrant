@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <div id="app">
+        <input @keyup.enter="getStates()" v-model="str">
+        <div v-for="state in states">
+            {{ state.name }}
+        </div>
+    </div>
+
+
+        <script src="https://unpkg.com/vue@next"></script>
+        <script>
+            let app = Vue.createApp({
+                data: function() {
+                    return {
+                        str: '',
+                        states: []
+                    }
+                },
+                methods: {
+                    getStates() {
+                        fetch('http://localhost:5000/graphql', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                            },
+                            body: JSON.stringify({query: `{ states(str: "${this.str}") {
+                                    name
+                                }
+                            }`})
+                        })
+                        .then(res => res.json())
+                        // .then(response => console.log('response:', response))
+                        .then(response => this.states = response.data.states)
+                        .catch(err => console.log(err.message))
+                    },
+                    log() {
+                        console.log("entered")
+                    }
+                }
+            })
+            app.mount('#app')
+        </script>
+    </body>
+
+
+</html>
