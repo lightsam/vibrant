@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <style>
+            #google-maps-container {
+                height:400px;
+                width:100%;
+            }
+        </style>
+    </head>
     <body>
-    <div id="app">
-        <div class="about flex flex-col items-center">
-            <div class="absolute inset-0 z-0" @click="modal=false"></div>
-        
-            <input type="text" class="bg-gray-300 px-4 py-2 z-10" autocomplete="off" v-model="str" @focus="modal=true">
-        
-            <div v-if="filteredStates && modal" class="z-10">
-              <ul class="w-48 bg-gray-800 text-white">
-                <li v-for="filteredState in filteredStates" :key="filteredState.name" 
-                class="py-2 border-b cursor-pointer" @click="setState(filteredState.name)">{{ filteredState.name }}</li>
-              </ul>
+        <div id="app">
+            <div class="about flex flex-col items-center">
+                <div class="absolute inset-0 z-0" @click="modal=false"></div>
+                <input type="text" class="bg-gray-300 px-4 py-2 z-10" autocomplete="off" v-model="str" @focus="modal=true">
+                <div v-if="filteredStates && modal" class="z-10">
+                    <ul class="w-48 bg-gray-800 text-white">
+                        <li v-for="filteredState in filteredStates" :key="filteredState.name" 
+                        class="py-2 border-b cursor-pointer" @click="setState(filteredState.name)">{{ filteredState.name }}</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
+        <div id="google-maps-container" class="z-10"></div>
 
         <script src="https://unpkg.com/vue@next"></script>
         <script>
@@ -62,6 +69,23 @@
                 }
             })
             app.mount('#app')
+        </script>
+
+        <script async
+            src="https://maps.googleapis.com/maps/api/js?key=mykey&callback=initializationCallback">
+        </script>
+        <script>
+            var map;
+
+            function initializationCallback() {
+                map = new google.maps.Map(document.getElementById('google-maps-container'), {
+                    center: {
+                        lat: 7.119082288502541,
+                        lng: -73.120029012106
+                    },
+                    zoom: 11,
+                });
+            }
         </script>
     </body>
 
