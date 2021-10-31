@@ -2,12 +2,18 @@
 <html>
     <body>
     <div id="app">
-        <input @input="getStates()" v-model="str">
-        <ul v-if="str !== '' && states.length !== 0" class="dropdown-menu" style="width:100%">
-            <li v-for="state in states">
-                <a href="#">{{ state.name }}</a>
-            </li>
-        </ul>
+        <div class="about flex flex-col items-center">
+            <div class="absolute inset-0 z-0" @click="modal=false"></div>
+        
+            <input type="text" class="bg-gray-300 px-4 py-2 z-10" autocomplete="off" v-model="str" @focus="modal=true">
+        
+            <div v-if="filteredStates && modal" class="z-10">
+              <ul class="w-48 bg-gray-800 text-white">
+                <li v-for="filteredState in filteredStates" :key="filteredState.name" 
+                class="py-2 border-b cursor-pointer" @click="setState(filteredState.name)">{{ filteredState.name }}</li>
+              </ul>
+            </div>
+        </div>
     </div>
 
 
@@ -17,11 +23,17 @@
                 data: function() {
                     return {
                         str: '',
-                        states: []
+                        modal: false,
+                        filteredStates: []
                     }
                 },
+
+                mounted() {
+                    this.filterStates();
+                },
+
                 methods: {
-                    getStates() {
+                    filterStates() {
                         fetch('http://localhost:5000/graphql', {
                             method: 'POST',
                             headers: {
@@ -34,12 +46,18 @@
                             }`})
                         })
                         .then(res => res.json())
-                        // .then(response => console.log('response:', response))
-                        .then(response => this.states = response.data.states)
+                        .then(response => this.filteredStates = response.data.states)
                         .catch(err => console.log(err.message))
                     },
-                    log() {
-                        console.log("entered")
+                    setState(state) {
+                        this.str = state;
+                        this.modal = false;
+                    },
+                },
+
+                watch: {
+                    str() {
+                        this.filterStates();
                     }
                 }
             })
