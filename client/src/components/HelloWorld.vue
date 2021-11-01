@@ -1,26 +1,10 @@
 <script>
 /* eslint-disable no-undef */
-import { ref, onMounted } from 'vue'
 import { Loader } from '@googlemaps/js-api-loader'
 
 const GOOGLE_MAPS_API_KEY = 'mykey'
 
 export default {
-  setup() {
-    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY })
-    const mapDiv = ref(null)
-    onMounted(async () => {
-      await loader.load()
-      new google.maps.Map(mapDiv.value, {
-        center: {
-            lat: 7.119082288502541,
-            lng: -73.120029012106
-        },
-        zoom: 11,
-      })
-    })
-    return { mapDiv }
-  },
 
   data() {
     return {
@@ -30,8 +14,11 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     this.filterStates();
+    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY })
+    await loader.load()
+    this.initMap()
   },
 
   methods: {
@@ -52,16 +39,22 @@ export default {
       .then(response => this.filteredStates = response.data.states)
       .catch(err => console.log(err.message))
     },
+
+    initMap() {
+      const mapContainer = this.$refs.mapDiv
+      return new google.maps.Map(mapContainer, {
+        center: {
+            lat: 7.119082288502541,
+            lng: -73.120029012106
+        },
+        zoom: 11,
+      })
+    },
+
     setState(state) {
       this.str = state.name;
       this.modal = false;
-      let map = new google.maps.Map(document.getElementById('google-maps-container'), {
-          center: {
-              lat: 7.119082288502541,
-              lng: -73.120029012106
-          },
-          zoom: 11,
-      });
+      let map = this.initMap()
       new google.maps.KmlLayer({
         url: state.kml_url,
         map: map
@@ -92,6 +85,6 @@ export default {
             </div>
         </div>
 
-        <div ref="mapDiv" id="google-maps-container" class="z-10" style="height:400px; width:100%"></div>
+        <div ref="mapDiv" class="z-10" style="height:400px; width:100%"></div>
     </body>
 </template>
