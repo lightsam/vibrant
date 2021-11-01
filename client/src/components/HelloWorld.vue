@@ -11,14 +11,16 @@ export default {
       str: '',
       modal: false,
       filteredStates: [],
+      usMap: null,
+      markers: [],
     }
   },
 
   async mounted() {
     this.filterStates();
-    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY })
-    await loader.load()
-    this.initMap()
+    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY });
+    await loader.load();
+    this.usMap = this.initMap();
   },
 
   methods: {
@@ -38,29 +40,34 @@ export default {
       })
       .then(res => res.json())
       .then(response => this.filteredStates = response.data.states)
-      .catch(err => console.log(err.message))
+      .catch(err => console.log(err.message));
     },
 
     initMap() {
-      const mapContainer = this.$refs.mapDiv
+      const mapContainer = this.$refs.mapDiv;
       return new google.maps.Map(mapContainer, {
         center: { // us center
             lat: 37.090200,
             lng: -95.712900
         },
         zoom: 4,
-      })
+      });
     },
 
     setState(state) {
       this.str = state.name;
       this.modal = false;
-      let map = this.initMap()
-      new google.maps.Marker({
+      for (let i = 0; i < this.markers.length; i++) {
+        this.markers[i].setMap(null);
+        this.markers = [];
+      }
+      const marker = new google.maps.Marker({
         position: { lat: state.lat, lng: state.lng },
-        map,
-        title: "Hello World!",
+        title: "state marker",
       });
+      marker.setMap(this.usMap);
+      this.markers.push(marker);
+      
       // state boundary:
       // new google.maps.KmlLayer({
       //   url: state.kml_url,
