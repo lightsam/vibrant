@@ -1,0 +1,68 @@
+<template>
+    <body>
+        <div id="app" style="height:400px; width:100%">
+            <div class="about flex flex-col items-center">
+                <div class="absolute inset-0 z-0" @click="modal=false"></div>
+                <input type="text" class="bg-gray-300 px-4 py-2 z-10" autocomplete="off" v-model="str" @focus="modal=true">
+                <div v-if="filteredStates && modal" class="z-10">
+                    <ul class="w-48 bg-gray-800 text-white">
+                        <li v-for="filteredState in filteredStates" :key="filteredState.name" 
+                        class="py-2 border-b cursor-pointer" @click="setState(filteredState.name)">{{ filteredState.name }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="google-maps-container" class="z-10" style="height:400px; width:100%"></div>
+    </body>
+</template>
+
+<script>
+export default {
+  data: function() {
+      return {
+          str: '',
+          modal: false,
+          filteredStates: []
+      }
+  },
+
+  mounted() {
+      this.filterStates();
+  },
+
+  methods: {
+      filterStates() {
+          fetch('http://localhost:5000/graphql', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+              },
+              body: JSON.stringify({query: `{ states(str: "${this.str}") {
+                      name
+                  }
+              }`})
+          })
+          .then(res => res.json())
+          .then(response => this.filteredStates = response.data.states)
+          .catch(err => console.log(err.message))
+      },
+      setState(state) {
+          this.str = state;
+          this.modal = false;
+      },
+  },
+
+  watch: {
+      str() {
+          this.filterStates();
+      }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+</style>
