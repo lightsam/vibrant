@@ -2,6 +2,10 @@
 <html>
     <head>
         <style>
+            #app {
+                height:400px;
+                width:100%;
+            }
             #google-maps-container {
                 height:400px;
                 width:100%;
@@ -84,6 +88,11 @@
                         lng: -73.120029012106
                     },
                     zoom: 11,
+                });
+
+                var ctaLayer = new google.maps.KmlLayer({
+                    url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true',
+                    map: map
                 });
             }
         </script>
