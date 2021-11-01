@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const { graphqlHTTP } = require('express-graphql')
 const {
+  GraphQLFloat,
   GraphQLList,
   GraphQLSchema,
   GraphQLObjectType,
@@ -10,8 +11,10 @@ const {
 const app = express()
 
 const states = [
-  { name: 'ab', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' },
-  { name: 'cd', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' }
+  { name: 'Alabama', lat: 32.318231, lng: -86.902298 },
+  { name: 'Arkansas', lat: 35.20105, lng: -91.831833 }
+  // { name: 'ab', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' },
+  // { name: 'cd', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' }
 ]
 
 const StateType = new GraphQLObjectType({
@@ -19,7 +22,8 @@ const StateType = new GraphQLObjectType({
   description: 'a state',
   fields: () => ({
     name: { type: GraphQLString },
-    kml_url: { type: GraphQLString },
+    lat: { type: GraphQLFloat },
+    lng: { type: GraphQLFloat },
   })
 })
 
@@ -33,7 +37,7 @@ const RootQueryType = new GraphQLObjectType({
       args: {
         str: { type: GraphQLString }
       },
-      resolve: (parent, args) => states.filter(s => s.name.includes(args.str))
+      resolve: (parent, args) => states.filter(s => s.name.toLowerCase().includes(args.str.toLowerCase()))
     }
   })
 })

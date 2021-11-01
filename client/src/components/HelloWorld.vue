@@ -31,7 +31,8 @@ export default {
         },
         body: JSON.stringify({query: `{ states(str: "${this.str}") {
             name
-            kml_url
+            lat
+            lng
           }
         }`})
       })
@@ -43,11 +44,11 @@ export default {
     initMap() {
       const mapContainer = this.$refs.mapDiv
       return new google.maps.Map(mapContainer, {
-        center: {
-            lat: 7.119082288502541,
-            lng: -73.120029012106
+        center: { // us center
+            lat: 37.090200,
+            lng: -95.712900
         },
-        zoom: 11,
+        zoom: 4,
       })
     },
 
@@ -55,10 +56,16 @@ export default {
       this.str = state.name;
       this.modal = false;
       let map = this.initMap()
-      new google.maps.KmlLayer({
-        url: state.kml_url,
-        map: map
+      new google.maps.Marker({
+        position: { lat: state.lat, lng: state.lng },
+        map,
+        title: "Hello World!",
       });
+      // state boundary:
+      // new google.maps.KmlLayer({
+      //   url: state.kml_url,
+      //   map: map
+      // });
     },
   },
 
