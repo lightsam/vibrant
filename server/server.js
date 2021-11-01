@@ -3,7 +3,6 @@ const cors = require('cors')
 const { graphqlHTTP } = require('express-graphql')
 const {
   GraphQLList,
-  GraphQLNonNull,
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString
@@ -11,15 +10,16 @@ const {
 const app = express()
 
 const states = [
-  { name: 'ab'},
-  { name: 'cd'}
+  { name: 'ab', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' },
+  { name: 'cd', kml_url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true' }
 ]
 
 const StateType = new GraphQLObjectType({
   name: 'State',
   description: 'a state',
   fields: () => ({
-    name: { type: GraphQLString }
+    name: { type: GraphQLString },
+    kml_url: { type: GraphQLString },
   })
 })
 

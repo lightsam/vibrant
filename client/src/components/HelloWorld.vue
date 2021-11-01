@@ -44,6 +44,7 @@ export default {
         },
         body: JSON.stringify({query: `{ states(str: "${this.str}") {
             name
+            kml_url
           }
         }`})
       })
@@ -62,7 +63,7 @@ export default {
           zoom: 11,
       });
       new google.maps.KmlLayer({
-        url: 'https://github.com/lightsam/files/blob/master/example.kml?raw=true',
+        url: state.kml_url,
         map: map
       });
     },
@@ -84,7 +85,7 @@ export default {
                 <input type="text" class="bg-gray-300 px-4 py-2 z-10" autocomplete="off" v-model="str" @focus="modal=true">
                 <div v-if="filteredStates && modal" class="z-10">
                     <ul class="w-48 bg-gray-800 text-white">
-                        <li v-for="filteredState in filteredStates" :key="filteredState.name" 
+                        <li v-for="filteredState in filteredStates" :key="filteredState.name"
                         class="py-2 border-b cursor-pointer" @click="setState(filteredState)">{{ filteredState.name }}</li>
                     </ul>
                 </div>
